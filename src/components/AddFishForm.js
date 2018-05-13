@@ -1,11 +1,6 @@
 import React from "react";
 
 class AddFishForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
   nameRef = React.createRef();
   priceRef = React.createRef();
   statusRef = React.createRef();
@@ -22,7 +17,7 @@ class AddFishForm extends React.Component {
       image: this.imageRef.value.value
     };
     this.props.addFish(fish);
-    e.currentTarget.reset(); // refresh the form
+    e.currentTarget.reset(); // clear the form
   };
   render() {
     return (
