@@ -14,28 +14,41 @@ class App extends React.Component {
 
   componentDidMount() {
     const { params } = this.props.match;
-    // Firebase database instant load
+    // first reinstate our localStorage
+    const localStorageRef = localStorage.getItem(params.storeId);
+    if (localStorageRef) {
+      this.setState({ order: JSON.parse(localStorageRef) });
+    }
+
     this.ref = base.syncState(`${params.storeId}/fishes`, {
       context: this,
       state: "fishes"
     });
   }
 
+  componentDidUpdate() {
+    console.log(this.state.order);
+    localStorage.setItem(
+      this.props.match.params.storeId,
+      JSON.stringify(this.state.order)
+    );
+  }
+
   componentWillUnmount() {
-    // Firebase unmount when out of the app store
     base.removeBinding(this.ref);
   }
 
   addFish = fish => {
+    // 1. Take a copy of the existing state
     const fishes = { ...this.state.fishes };
+    // 2. Add our new fish to that fishes variable
     fishes[`fish${Date.now()}`] = fish;
+    // 3. Set the new fishes object to state
     this.setState({ fishes });
   };
 
   loadSampleFishes = () => {
-    this.setState({
-      fishes: sampleFishes
-    });
+    this.setState({ fishes: sampleFishes });
   };
 
   addToOrder = key => {
@@ -51,11 +64,12 @@ class App extends React.Component {
     return (
       <div className="catch-of-the-day">
         <div className="menu">
-          <Header tagline="Freash Seafood Market" />
+          <Header tagline="Fresh Seafood Market" />
           <ul className="fishes">
             {Object.keys(this.state.fishes).map(key => (
               <Fish
                 key={key}
+                index={key}
                 details={this.state.fishes[key]}
                 addToOrder={this.addToOrder}
               />
