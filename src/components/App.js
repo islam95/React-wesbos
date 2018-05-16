@@ -4,12 +4,27 @@ import Order from "./Order";
 import Inventory from "./Inventory";
 import sampleFishes from "../sample-fishes";
 import Fish from "./Fish";
+import base from "../base";
 
 class App extends React.Component {
   state = {
     fishes: {},
     order: {}
   };
+
+  componentDidMount() {
+    const { params } = this.props.match;
+    // Firebase database instant load
+    this.ref = base.syncState(`${params.storeId}/fishes`, {
+      context: this,
+      state: "fishes"
+    });
+  }
+
+  componentWillUnmount() {
+    // Firebase unmount when out of the app store
+    base.removeBinding(this.ref);
+  }
 
   addFish = fish => {
     const fishes = { ...this.state.fishes };
