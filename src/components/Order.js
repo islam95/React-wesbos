@@ -1,5 +1,6 @@
 import React from "react";
 import { formatPrice } from "../helpers";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 class Order extends React.Component {
   renderOrder = key => {
@@ -24,6 +25,7 @@ class Order extends React.Component {
       </li>
     );
   };
+
   render() {
     const orderIds = Object.keys(this.props.order);
     const total = orderIds.reduce((prevTotal, key) => {
@@ -38,7 +40,9 @@ class Order extends React.Component {
     return (
       <div className="order-wrap">
         <h2>Order</h2>
-        <ul className="order">{orderIds.map(this.renderOrder)}</ul>
+        <ul className="order">
+          {orderIds.map(this.renderOrder)}
+        </ul>
         <div className="total">
           Total:
           <strong>{formatPrice(total)}</strong>
